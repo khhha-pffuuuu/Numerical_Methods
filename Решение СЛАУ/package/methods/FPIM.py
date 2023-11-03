@@ -26,7 +26,7 @@ def FPIM(A: Matrix, b: Matrix, eps):
         x_ = B * x + c
         k += 1
 
-        if abs(B.norm('inf') / (1 - B.norm('inf')) * (x_ - x).norm('inf')) < eps:
+        if abs(A * x_ - b) < eps:
             return x_, k
 
         x = x_.copy

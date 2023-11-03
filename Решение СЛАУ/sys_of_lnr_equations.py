@@ -4,10 +4,9 @@ from package.matrix import Matrix
 
 
 def main():
-    Matrix.discard_index = 10
-
     # Тесты от нулевого до четвертого
     for i in range(5):
+        print(f'ТЕСТ {i}')
         m_A = hp.file_adapting(open(f'package/tests/test{i}-A.txt', 'r+'))
         m_b = hp.file_adapting(open(f'package/tests/test{i}-b.txt', 'r+'))
         A, b = Matrix(m_A), Matrix(m_b)
