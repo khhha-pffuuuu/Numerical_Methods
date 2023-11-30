@@ -326,15 +326,40 @@ class Matrix(object):
 
     @property
     def det(self):
-        """Определитель матрицы (A.det)"""
-        if self.__r_count == 1:
-            return self.__matrix[0][0]
-        elif self.__r_count == 2:
-            return self.__matrix[0][0] * self.__matrix[1][1] - self.__matrix[1][0] * self.__matrix[0][1]
+        """Определитель матрицы, высчитываемый методом Гаусса (A.det)"""
+        A = self.copy
+        n = self.__r_count
 
-        det = 0
-        for i in range(self.__c_count):
-            det += (-1) ** i * self.__matrix[0][i] * self[0:i].det
+        mult_num = 1  # На это число домножим итоговый ответ. Оно принимает значение либо 1, либо -1
+        for i in range(n - 1):
+            if A[i, i] == 0:  # Если число в диагонали равно нулю, тогда делаем перестановку
+                max_i = i
+
+                for j in range(i + 1, n):  # Ищем индекс строки, где число в данном столбце не равно 0
+                    if A[j, i] != 0:
+                        max_i = j
+                        break
+
+                add_vector = A[max_i, None]
+                A[max_i, None] = A[i, None]
+                A[i, None] = add_vector
+
+                mult_num *= -1  # При каждой перестановке домножаем на -1
+
+            # Видоизменяем матрицу, зануляя колонку
+            for j in range(i + 1, n):
+                factor = -A[j, i] / A[i, i]
+                for k in range(i + 1, n):
+                    A[j, k] += A[i, k] * factor
+
+            for j in range(i + 1, n):
+                A[j, i] = 0
+
+        d_elems = [A[i, i] for i in range(n)]  # Находим определитель, перемножив диагональные элементы матрицы
+
+        det = mult_num * d_elems[0]
+        for i in range(1, len(d_elems)):
+            det *= d_elems[i]
 
         return det
 
