@@ -283,7 +283,7 @@ class Matrix(object):
         return self.__sub__(other)
 
     def __pow__(self, power, modulo=None):
-        """Возведение матрицы в степень (A ** α); эта функция достаточно точно работает, если power >= -14"""
+        """Бинарное возведение матрицы в степень (A ** α)"""
         if power == 1:
             return self.copy
         elif power < -1:
@@ -292,17 +292,45 @@ class Matrix(object):
             return Matrix.E(self.__r_count)
         elif power == 2:
             return self * self
-        elif power == -1:
-            matrix = []
-            for i in range(self.__c_count):
-                row = []
+        elif power == -1:  # Вычисляем обратную матрицу методом Гаусса
+            n = self.dim[0]
+            A = self.copy
+            inv_A = Matrix.E(n)
+            for i in range(self.__r_count):
+                if A[i, i] == 0:  # Если число в диагонали равно нулю, тогда делаем перестановку
+                    max_i = i
+                    for j in range(i + 1, self.__r_count):  # Ищем индекс строки, где число в данном столбце не равно 0
+                        if A[j, i] != 0:
+                            max_i = j
+                            break
+                    for M in [A, inv_A]:  # Меняем строки в матрицах
+                        add_vector = M[max_i, None]
+                        M[max_i, None] = M[i, None]
+                        M[i, None] = add_vector
+
+                # Преобразуем обратную матрицу
                 for j in range(self.__r_count):
-                    elem = (-1) ** (i + j) * (self[j: i].det / self.det)
-                    row.append(elem)
-                matrix.append(row)
+                    if j != i:
+                        factor = -A[j, i] / A[i, i]
+                        for k in range(self.__c_count):
+                            inv_A[j, k] += factor * inv_A[i, k]
+                for k in range(self.__c_count):
+                    inv_A[i, k] /= A[i, i]
 
-            return Matrix(matrix)
+                # Преобразуем исходную матрицу
+                for j in range(self.__r_count):
+                    if j != i:
+                        factor = -A[j, i] / A[i, i]
+                        for k in range(i + 1, self.__c_count):
+                            A[j, k] += factor * A[i, k]
+                for k in range(i + 1, self.__c_count):
+                    A[i, k] /= A[i, i]
+                for j in range(self.__r_count):
+                    A[j, i] = 0 if j != i else 1
 
+            return inv_A
+
+        # Непосредственно биномиальное возведение в степень
         if power % 2 == 0:
             return (self ** 2) * (self ** (power // 2))
         else:
@@ -334,12 +362,11 @@ class Matrix(object):
         for i in range(n - 1):
             if A[i, i] == 0:  # Если число в диагонали равно нулю, тогда делаем перестановку
                 max_i = i
-
                 for j in range(i + 1, n):  # Ищем индекс строки, где число в данном столбце не равно 0
                     if A[j, i] != 0:
                         max_i = j
                         break
-
+                # Меняем строки матрицы
                 add_vector = A[max_i, None]
                 A[max_i, None] = A[i, None]
                 A[i, None] = add_vector
@@ -351,12 +378,10 @@ class Matrix(object):
                 factor = -A[j, i] / A[i, i]
                 for k in range(i + 1, n):
                     A[j, k] += A[i, k] * factor
-
             for j in range(i + 1, n):
                 A[j, i] = 0
 
         d_elems = [A[i, i] for i in range(n)]  # Находим определитель, перемножив диагональные элементы матрицы
-
         det = mult_num * d_elems[0]
         for i in range(1, len(d_elems)):
             det *= d_elems[i]

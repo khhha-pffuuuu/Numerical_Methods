@@ -7,9 +7,8 @@ def Gauss_Seidel(A, b, eps):
 
     # Проверяем два достаточных условия сходимости
     if not A.is_dd:
-        if not A.is_pd:
-            T = ~A
-            A, b = T * A, T * b
+        T = ~A
+        A, b = T * A, T * b
 
     B = E.copy
     c = Matrix.NULL_VECTOR(n)

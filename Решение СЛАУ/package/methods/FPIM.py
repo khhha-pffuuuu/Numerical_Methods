@@ -10,12 +10,11 @@ def FPIM(A: Matrix, b: Matrix, eps):
 
     # Проверяем два достаточных условия сходимости МПИ
     if B.norm('inf') >= 1:
-        if not A.is_pd:
-            T = ~A
-            A, b = T * A, T * b
+        T = ~A
+        A, b = T * A, T * b
 
-            mu = 1 / A.norm('inf')
-            B = E - mu * A
+        mu = 1 / A.norm('inf')
+        B = E - mu * A
 
     c = mu * b
     x = c.copy
