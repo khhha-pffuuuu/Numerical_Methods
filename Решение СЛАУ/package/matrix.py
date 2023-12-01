@@ -2,7 +2,7 @@ from .helpers import sqrt
 
 
 class Matrix(object):
-    discard_index = 15  # Количество цифр после запятой
+    discard_index = 3  # Количество цифр после запятой
 
     def __new__(cls, matrix):
         """Объект матрицы можно создать, только если аргументом является либо файлом с матрицей,
@@ -71,7 +71,7 @@ class Matrix(object):
 
     @property
     def is_pd(self):
-        """Проверка матрицы на положительную определенность (только для квадратных матрицы)"""
+        """Проверка матрицы на положительную определенность критерием Сильвестра"""
         for i in range(self.__r_count):
             minor = self.copy
             for _ in range(i + 1, self.__c_count):
@@ -81,6 +81,16 @@ class Matrix(object):
 
             if elem <= 0:
                 return False
+
+        return True
+
+    @property
+    def is_sym(self):
+        """Проверка матрицы на симметричность"""
+        for i in range(self.__r_count):
+            for j in range(i + 1, self.__c_count):
+                if self.__matrix[i][j] != self.__matrix[j][i]:
+                    return False
 
         return True
 
@@ -98,12 +108,8 @@ class Matrix(object):
         return True
 
     def __setitem__(self, index, value):
-        """Функция задает значение либо элементу матрицы (A[i,j] = α),
-        либо строке(столбцу) (A(i, None) = a, A(None, j) = a,
-        либо всем элементам >= i и >= j(более понятным языком, меняет элементы
-        'прямоугольника', ограниченного индексами i, j, внутри матрицы,
-        использовать можно так: A[i: j: step] = B, если step = 1, тогда замена
-        идет от индексов, если step == -1 - до)"""
+        """Функция задает значение элементу матрицы (A[i,j] = α),
+        либо строке(столбцу) (A(i, None) = a, A(None, j) = a"""
 
         if isinstance(index, tuple):
             row, column = index
@@ -111,28 +117,13 @@ class Matrix(object):
             if None not in index:
                 self.__matrix[row][column] = value
 
-            elif row is not None and column is None:
+            elif column is None:
                 for i in range(self.__c_count):
                     self.__matrix[row][i] = value.__matrix[0][i]
 
-            elif row is None and column is not None:
+            elif row is None:
                 for i in range(self.__r_count):
                     self.__matrix[i][column] = value.__matrix[i][0]
-
-        elif isinstance(index, slice):
-            row_index = index.start
-            column_index = index.stop
-            side_index = index.step
-
-            if side_index == 1:
-                for i in range(row_index, self.__r_count):
-                    for j in range(column_index, self.__c_count):
-                        self.__matrix[i][j] = value.__matrix[i - row_index][j - column_index]
-
-            elif side_index == -1:
-                for i in range(row_index):
-                    for j in range(column_index):
-                        self.__matrix[i][j] = value.__matrix[i][j]
 
     def __getitem__(self, index):
         """Функция возвращает либо обрезанную матрицу (A[i:j], например,
@@ -140,7 +131,30 @@ class Matrix(object):
         вырезать только строку или столбец можно таким образом: A[i: None],
         A[None: j]), либо один элемент (A[i,j]), либо вектор из матрицы
         (A[i, None] или A[None, i])"""
-        if isinstance(index, slice):
+        if isinstance(index, tuple):
+            row, column = index
+
+            if None not in index:
+                return self.__matrix[row][column]
+
+            if row is None:
+                matrix = []
+                for i in range(self.__r_count):
+                    matrix.append([self.__matrix[i][column]])
+
+                return Matrix(matrix)
+
+            elif column is None:
+                matrix = []
+
+                row_list = []
+                for i in range(self.__c_count):
+                    row_list.append(self.__matrix[row][i])
+                matrix.append(row_list)
+
+                return Matrix(matrix)
+
+        elif isinstance(index, slice):
             row_index = index.start
             column_index = index.stop
 
@@ -155,29 +169,6 @@ class Matrix(object):
                     matrix.append(row)
 
             return Matrix(matrix)
-
-        elif isinstance(index, tuple):
-            row, column = index
-
-            if row is None and column is not None:
-                matrix = []
-                for i in range(self.__r_count):
-                    matrix.append([self.__matrix[i][column]])
-
-                return Matrix(matrix)
-
-            elif column is None and row is not None:
-                matrix = []
-
-                row_list = []
-                for i in range(self.__c_count):
-                    row_list.append(self.__matrix[row][i])
-                matrix.append(row_list)
-
-                return Matrix(matrix)
-
-            elif None not in index:
-                return self.__matrix[row][column]
 
     def __mul__(self, other):
         """Функция умножает матрицу либо на число (A * α), либо на матрицу (A * B)"""
@@ -207,32 +198,30 @@ class Matrix(object):
 
             return Matrix(matrix)
 
-    def __rmul__(self, other):
+    def __rmul__(self, number):
         """Функция позволяет коммутативно умножать матрицу на число"""
-        if not isinstance(other, Matrix):
-            return self.__mul__(other)
+        return self * number
 
-    def __imul__(self, other):
+    def __imul__(self, number):
         """Перегрузка оператора *= для чисел"""
-        if not isinstance(other, Matrix):
-            return self.__mul__(other)
+        return self * number
 
-    def __truediv__(self, other):
+    def __truediv__(self, number):
         """Деление матрицы на число"""
         matrix = []
 
         for i in range(self.__r_count):
             row = []
             for j in range(self.__c_count):
-                elem = self.__matrix[i][j] / other
+                elem = self.__matrix[i][j] / number
                 row.append(elem)
             matrix.append(row)
 
         return Matrix(matrix)
 
-    def __idiv__(self, other):
-        """Перегрузка оператора \="""
-        return self.__truediv__(other)
+    def __idiv__(self, number):
+        """Перегрузка оператора /= для чисел"""
+        return self / number
 
     def __matmul__(self, other):
         """Скалярное произведение (a @ b)"""
@@ -247,40 +236,38 @@ class Matrix(object):
         return in_prod
 
     def __add__(self, other):
-        """Сложение матриц (A + B), либо сложение векторов (a + b)"""
-        if min(self.__r_count, other.__r_count, self.__c_count, other.__c_count) != 1:
-            matrix = []
+        """Сложение матриц (A + B)"""
+        matrix = []
 
-            for i in range(self.__r_count):
-                row = []
-                for j in range(self.__c_count):
-                    elem = self.__matrix[i][j] + other.__matrix[i][j]
-                    row.append(elem)
-                matrix.append(row)
+        for i in range(self.__r_count):
+            row = []
+            for j in range(self.__c_count):
+                elem = self.__matrix[i][j] + other.__matrix[i][j]
+                row.append(elem)
+            matrix.append(row)
 
-            return Matrix(matrix)
-
-        else:
-            vec1 = ~self if self.__r_count == 1 else self
-            vec2 = ~other if other.__r_count == 1 else other
-
-            matrix = []
-            for i in range(vec1.__r_count):
-                matrix.append([vec1.__matrix[i][0] + vec2.__matrix[i][0]])
-
-            return Matrix(matrix)
+        return Matrix(matrix)
 
     def __iadd__(self, other):
         """Перегрузка оператора +="""
-        return self.__add__(other)
+        return self + other
 
     def __sub__(self, other):
-        """Разность матриц (A - B), либо разность векторов (a - b)"""
-        return self + (-1) * other
+        """Разность матриц (A - B)"""
+        matrix = []
+
+        for i in range(self.__r_count):
+            row = []
+            for j in range(self.__c_count):
+                elem = self.__matrix[i][j] - other.__matrix[i][j]
+                row.append(elem)
+            matrix.append(row)
+
+        return Matrix(matrix)
 
     def __isub__(self, other):
         """Перегрузка оператора -="""
-        return self.__sub__(other)
+        return self - other
 
     def __pow__(self, power, modulo=None):
         """Бинарное возведение матрицы в степень (A ** α)"""
@@ -336,9 +323,9 @@ class Matrix(object):
         else:
             return self * (self ** (power - 1))
 
-    def __ipow__(self, other):
+    def __ipow__(self, power):
         """Перегрузка оператора **="""
-        return self.__pow__(other)
+        return self ** power
 
     def __invert__(self):
         """Транспонированние матрицы (~A)"""
@@ -418,8 +405,8 @@ class Matrix(object):
 
     @property
     def copy(self):
-        """Копирует матрицу. Это необходимо, так как, например, new_matrix = A, ссылки на все элементы останутся теми
-        же, то есть при изменении new_matrix будет изменяться и A"""
+        """Копирует матрицу. Это необходимо, так как, например, для B = A ссылки на все элементы останутся теми
+        же, то есть при изменении B будет изменяться и A"""
         matrix = []
 
         for i in range(self.__r_count):

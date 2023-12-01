@@ -18,8 +18,10 @@ def QR(A: Matrix, b: Matrix):
         w = (y - z * a) / p
 
         H = E.copy
-        pre_H = Matrix.E(n - i) - 2 * w * ~w
-        H[i: i: 1] = pre_H  # "Вкладываем" вычисленную нами матрицу в единичную матицу
+        H_ = Matrix.E(n - i) - 2 * w * ~w
+        for j in range(i, n):  # "Вкладываем" вычисленную нами матрицу в единичную матицу
+            for k in range(i, n):
+                H[j, k] = H_[j - i, k - i]
 
         Q = Q * ~H
         R = H * R
