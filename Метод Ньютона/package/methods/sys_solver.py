@@ -88,7 +88,7 @@ def sys_root_search(Function, Function_derivative) -> Matrix:
 
     while True:
         # Решаем систему derF * dx = F и обновляем значения x, y
-        delta_x = LUP(Function_derivative(x, y), Function(x, y))
+        delta_x = LUP(Function_derivative(x, y), -1 * Function(x, y))
         values_ = delta_x + values
 
         if abs(values_ - values) < eps:
