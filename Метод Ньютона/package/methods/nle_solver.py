@@ -1,7 +1,9 @@
-def enumeration(function, start, end) -> tuple:
+def enumeration(function, segment) -> tuple:
     """Поиск приближения промежутка, в котором лежит корень, при помощи последовательного перебора"""
     n = 1  # Начальная длина дробления
+    start, end = segment
     x = start
+
     while True:
         if x == end:  # Если мы достигли конца заданной области значений, но никак не локализовали корень, то начинаем
             # сначала и ранг дробления увеличиваем вдвое
@@ -18,11 +20,11 @@ def enumeration(function, start, end) -> tuple:
         x = x_
 
 
-def root_search(function, function_derivative, start, end) -> float:
+def root_search(function, function_derivative, segment) -> float:
     """Поиск корней при помощи комбинации метода Ньютона и метода половинного деления"""
     eps = 10 ** -4  # Заданная погрешность
 
-    a, b = enumeration(function, start, end)  # Приближенный промежуток
+    a, b = enumeration(function, segment)  # Приближенный промежуток
     x = a
 
     while True:

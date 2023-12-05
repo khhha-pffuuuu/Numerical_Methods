@@ -58,13 +58,13 @@ def LUP(A: Matrix, b: Matrix) -> Matrix:
     return x
 
 
-def approach(Function, Function_derivative) -> Matrix:
+def approach(Function, Function_derivative, start_value) -> Matrix:
     """Функция приближенного поиска решения системы с помощью метода Ньютона"""
     n = 10  # Ранг дробления Ф(x,y,l)
 
     # Начальные значения x, y
-    x, y = 0, 0
-    values = Matrix([[x], [y]])
+    values = start_value
+    x, y = [values[i, 0] for i in range(values.dim[0])]
 
     i = 1
     while i <= 10:
@@ -78,12 +78,12 @@ def approach(Function, Function_derivative) -> Matrix:
     return values
 
 
-def sys_root_search(Function, Function_derivative) -> Matrix:
+def sys_root_search(Function, Function_derivative, start_value) -> Matrix:
     """Непосредственно сам метод Ньютона(классический) для систем уравнений"""
     eps = 10 ** -4  # Заданная погрешность
 
     # Высчитываем первое приближение к корню
-    values = approach(Function, Function_derivative)
+    values = approach(Function, Function_derivative, start_value)
     x, y = [values[i, 0] for i in range(values.dim[0])]
 
     while True:
