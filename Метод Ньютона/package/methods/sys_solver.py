@@ -69,7 +69,7 @@ def approach(Function, Function_derivative, start_value) -> Matrix:
     i = 1
     while i <= 10:
         # Обновляем x, y
-        delta_x = LUP(Function_derivative(x, y), Function(x, y, i / n))
+        delta_x = LUP(Function_derivative(x, y), -1 * Function(x, y, i / n))
         values = delta_x + values
 
         x, y = [values[i, 0] for i in range(values.dim[0])]  # Достаем значения из матрицы
