@@ -172,7 +172,7 @@ class Matrix(object):
 
     def __mul__(self, other):
         """Функция умножает матрицу либо на число (A * α), либо на матрицу (A * B)"""
-        if isinstance(other, float) or isinstance(other, int):
+        if isinstance(other, float) or isinstance(other, int) or isinstance(other, complex):
             matrix = []
 
             for i in range(self.__r_count):

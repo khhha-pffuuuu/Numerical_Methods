@@ -32,6 +32,15 @@ def main():
                   f'Погрешность решения: {inc_FPIM}\n'
                   f'Количество итераций: {iter_count}\n')
 
+        print(f'Метод Якоби:')  # Только для матриц с диагональным преобладанием
+        if A.is_dd:
+            for degree in range(2, 5):  # Несколько тестов с разными точностями
+                x_Jacobi, iter_count = mtd.Jacobi(A, b, 10 ** -degree)
+                inc_Jacobi = abs(x - x_Jacobi)
+                print(f'Точность 10^-{degree}:\n{x_Jacobi}\n'
+                      f'Погрешность решения: {inc_Jacobi}\n'
+                      f'Количество итераций: {iter_count}\n')
+
         print(f'Метод Гаусса-Зейделя:')
         for degree in range(2, 5):
             x_GS, iter_count = mtd.Gauss_Seidel(A, b, 10 ** -degree)
@@ -70,6 +79,16 @@ def main():
                 print(f'Точность 10^-{degree}:\n{x_FPIM}\n'
                       f'Погрешность решения: {inc_FPIM}\n'
                       f'Количество итераций: {iter_count}\n')
+
+            print(f'Метод Якоби:')  # Только для матриц с диагональным преобладанием
+
+            if A.is_dd:
+                for degree in range(2, 5):  # Несколько тестов с разными точностями
+                    x_Jacobi, iter_count = mtd.Jacobi(A, b, 10 ** -degree)
+                    inc_Jacobi = abs(x - x_Jacobi)
+                    print(f'Точность 10^-{degree}:\n{x_Jacobi}\n'
+                          f'Погрешность решения: {inc_Jacobi}\n'
+                          f'Количество итераций: {iter_count}\n')
 
             print(f'Метод Гаусса-Зейделя:')
 
