@@ -1,7 +1,8 @@
 from ..matrix import Matrix
 
 
-def Gauss_Seidel(A, b, eps):
+def Gauss_Seidel(A: Matrix, b: Matrix, eps: float) -> tuple:
+    """Метод Якоби + итерации Зейделя(ищем новое приближение не сразу, а покоординатно)"""
     n = A.dim[0]
     E = Matrix.E(n)
 
@@ -17,7 +18,8 @@ def Gauss_Seidel(A, b, eps):
         for j in range(n):
             B[i, j] = -A[i, j] / A[i, i] if i != j else 0
 
-    x = c.copy
+    B_norm = B.norm('inf')  # Затем используется для критерия остановки
+    x = c.copy  # За начальное приближение берут часто именно вектор c
 
     k = 0
     # Выполняем итерации, пока не достигнем ответа достаточной точности
@@ -25,6 +27,7 @@ def Gauss_Seidel(A, b, eps):
         x_ = x.copy
         k += 1
 
+        # Покоординатно считаем новое приближение x
         for i in range(n):
             row_sum = 0
             for j in range(n):
@@ -34,7 +37,10 @@ def Gauss_Seidel(A, b, eps):
                     row_sum += c[i, 0]
             x_[i, 0] = row_sum
 
-        if abs(A * x_ - b) < eps:
+        # Проверяем, меньше ли норма B единицы, если да, то используем апостериорную оценку, иначе смотрим неявку
+        if B_norm < 1 and B_norm / (1 - B_norm) * (x_ - x).norm('inf') < eps:
+            return x_, k
+        elif B_norm >= 1 and abs(A * x_ - b) < eps:
             return x_, k
 
         x = x_.copy

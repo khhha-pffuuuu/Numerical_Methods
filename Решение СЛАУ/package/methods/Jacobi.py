@@ -2,6 +2,7 @@ from ..matrix import Matrix
 
 
 def Jacobi(A: Matrix, b: Matrix, eps: float) -> tuple:
+    """В методе мы раскладываем матрицу A на три матрицы с элементами под, на и над элементами диагонали."""
     n = A.dim[0]
 
     B = Matrix([[0 for _ in range(n)] for _ in range(n)])
@@ -9,11 +10,10 @@ def Jacobi(A: Matrix, b: Matrix, eps: float) -> tuple:
 
     # Строим матрицу B и вектор c в соответствии с алгоритмом из курса
     for i in range(n):
-        factor = A[i, i]
+        c[i, 0] = b[i, 0] / A[i, i]
         for j in range(n):
             if i != j:
-                B[i, j] = -A[i, j] / factor
-        c[i, 0] = b[i, 0] / factor
+                B[i, j] = -A[i, j] / A[i, i]
 
     B_norm = B.norm('inf')  # Затем используется для критерия остановки
     x = c.copy  # За начальное приближение берут часто именно вектор c

@@ -2,7 +2,7 @@ from math import sqrt
 
 
 class Matrix(object):
-    discard_index = 17  # Количество цифр после запятой
+    discard_index = 15  # Количество цифр после запятой
 
     def __new__(cls, matrix):
         """Объект матрицы можно создать, только если аргументом является либо файлом с матрицей,
@@ -172,7 +172,7 @@ class Matrix(object):
 
     def __mul__(self, other):
         """Функция умножает матрицу либо на число (A * α), либо на матрицу (A * B)"""
-        if isinstance(other, float) or isinstance(other, int):
+        if isinstance(other, float) or isinstance(other, int) or isinstance(other, complex):
             matrix = []
 
             for i in range(self.__r_count):

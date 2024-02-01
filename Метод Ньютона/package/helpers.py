@@ -1,8 +1,8 @@
-from ..matrix import Matrix
+from .matrix import Matrix
 
 
+# Комментарии к методу можно почитать в папке 'Решение СЛАУ'
 def LUP(A: Matrix, b: Matrix) -> Matrix:
-    """Имплементация метода Гаусса. Метод разложения матрицы на треугольные."""
     n = A.dim[0]
     E = Matrix.E(n)
 
@@ -10,27 +10,24 @@ def LUP(A: Matrix, b: Matrix) -> Matrix:
     P = E.copy
 
     for i in range(n - 1):
-        # Определяем строку с максимальным по модулю элементом
         max_i = i
 
         for j in range(i, n):
             max_i = j if abs(M[max_i, i]) < abs(M[j, i]) else max_i
 
-        # Выполняем перестановку в матрицах P и M, меняя строки местами
         for matrix in [P, M]:
             add_vector = matrix[max_i, None]
             matrix[max_i, None] = matrix[i, None]
             matrix[i, None] = add_vector
 
-        # Преобразуем матрицу M
         for j in range(i + 1, n):
             M[j, i] = M[j, i] / M[i, i]
             for k in range(i + 1, n):
                 M[j, k] = M[j, k] - M[j, i] * M[i, k]
 
-    # Проводим LU-разложение
     L = E.copy
     U = E.copy
+
     for i in range(n):
         for j in range(n):
             if i > j:
@@ -41,7 +38,6 @@ def LUP(A: Matrix, b: Matrix) -> Matrix:
                 L[i, i] = 1
                 U[i, i] = M[i, i]
 
-    # Решаем систему Ly = Pb и Ux = y
     Pb = P * b
     y = Matrix.NULL_VECTOR(n)
     for k in range(n):

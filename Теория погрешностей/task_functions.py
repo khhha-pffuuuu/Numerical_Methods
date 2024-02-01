@@ -1,7 +1,8 @@
 import math
 
 
-def fact(n):
+def fact(n: int) -> int:
+    """Вычисление факториала(только для натуральных чисел)"""
     res = 1
     for i in range(1, n + 1):
         res *= i
@@ -9,7 +10,8 @@ def fact(n):
     return res
 
 
-def sqrt(x):
+def sqrt(x: float) -> float:
+    """Поиск значения корня при помощи формулы Герона"""
     eps = 6.4 * 10**-7
     res = x / 2
 
@@ -20,7 +22,8 @@ def sqrt(x):
         res = res_
 
 
-def cos(x):
+def cos(x: float) -> float:
+    """Разложение в ряд Тейлора функции cos"""
     eps = 1.1 * 10**-6
     res = 0
     n = 0
@@ -33,7 +36,8 @@ def cos(x):
         n += 1
 
 
-def arctan(x):
+def arctan(x: float) -> float:
+    """Разложение в ряд Тейлора функции sin"""
     eps = 3.5 * 10 ** -7
     n = 0
 

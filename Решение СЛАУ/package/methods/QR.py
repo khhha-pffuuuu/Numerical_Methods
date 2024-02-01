@@ -1,7 +1,8 @@
 from ..matrix import Matrix
 
 
-def QR(A: Matrix, b: Matrix):
+def QR(A: Matrix, b: Matrix) -> Matrix:
+    """Метод разложения матрицы на треугольную и ортонормированную."""
     n = A.dim[0]
     E = Matrix.E(n)
 
