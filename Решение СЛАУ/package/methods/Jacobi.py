@@ -6,7 +6,7 @@ def Jacobi(A: Matrix, b: Matrix, eps: float) -> tuple:
     n = A.dim[0]
 
     B = Matrix([[0 for _ in range(n)] for _ in range(n)])
-    c = Matrix.NULL_VECTOR(n)
+    c = Matrix.zeros(n, 1)
 
     # Строим матрицу B и вектор c в соответствии с алгоритмом из курса
     for i in range(n):

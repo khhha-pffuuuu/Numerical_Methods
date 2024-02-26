@@ -29,7 +29,7 @@ def QR(A: Matrix, b: Matrix) -> Matrix:
 
     # Решаем систему Rx = ~Qb
     y = ~Q * b
-    x = Matrix.NULL_VECTOR(n)
+    x = Matrix.zeros(n, 1)
     for k in reversed(range(n)):
         x[k, 0] = y[k, 0] / R[k, k]
         for i in range(k + 1, n):

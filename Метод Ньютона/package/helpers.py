@@ -39,13 +39,13 @@ def LUP(A: Matrix, b: Matrix) -> Matrix:
                 U[i, i] = M[i, i]
 
     Pb = P * b
-    y = Matrix.NULL_VECTOR(n)
+    y = Matrix.zeros(n, 1)
     for k in range(n):
         y[k, 0] = Pb[k, 0]
         for i in range(k):
             y[k, 0] -= L[k, i] * y[i, 0]
 
-    x = Matrix.NULL_VECTOR(n)
+    x = Matrix.zeros(n, 1)
     for k in reversed(range(n)):
         x[k, 0] = y[k, 0] / U[k, k]
         for i in range(k + 1, n):

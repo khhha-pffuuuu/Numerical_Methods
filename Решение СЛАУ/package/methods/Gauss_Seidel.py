@@ -12,7 +12,7 @@ def Gauss_Seidel(A: Matrix, b: Matrix, eps: float) -> tuple:
         A, b = T * A, T * b
 
     B = E.copy
-    c = Matrix.NULL_VECTOR(n)
+    c = Matrix.zeros(n, 1)
     for i in range(n):
         c[i, 0] = b[i, 0] / A[i, i]
         for j in range(n):

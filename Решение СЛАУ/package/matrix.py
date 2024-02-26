@@ -418,13 +418,16 @@ class Matrix(object):
         return Matrix(matrix)
 
     @staticmethod
-    def E(n):
+    def E(rows, cols=None):
         """Возвращает единичную матрицу той же размерности, что и у матрицы"""
+        if cols is None:
+            cols = rows
+
         matrix = []
 
-        for i in range(n):
+        for i in range(rows):
             row = []
-            for j in range(n):
+            for j in range(cols):
                 elem = 0 if i != j else 1
                 row.append(elem)
             matrix.append(row)
@@ -432,6 +435,9 @@ class Matrix(object):
         return Matrix(matrix)
 
     @staticmethod
-    def NULL_VECTOR(n):
-        """Возвращает нулевой вектор"""
-        return Matrix([[0] for _ in range(n)])
+    def zeros(rows, cols=None):
+        """Возвращает нулевую матрицу"""
+        if cols is None:
+            cols = rows
+
+        return Matrix([[0 for _ in range(cols)] for _ in range(rows)])
