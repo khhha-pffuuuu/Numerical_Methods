@@ -8,7 +8,7 @@ def approach(Func, Func_der, start_value: Matrix) -> Matrix:
 
     # Начальные значения x, y
     values = start_value
-    x, y = values[0, 0], values[1, 0]
+    x, y = values[0], values[1]
 
     i = 0
     while i <= n:
@@ -16,7 +16,7 @@ def approach(Func, Func_der, start_value: Matrix) -> Matrix:
         delta_x = LUP(Func_der(x, y, i / n), -1 * Func(x, y, i / n))
         values = delta_x + values
 
-        x, y = [values[i, 0] for i in range(values.dim[0])]  # Достаем значения из матрицы
+        x, y = [values[i] for i in range(values.dim[0])]  # Достаем значения из матрицы
         i += 1
 
     return values
@@ -28,7 +28,7 @@ def sys_root_search(Func, Func_der, start_value: Matrix) -> Matrix:
 
     # Высчитываем первое приближение к корню
     values = approach(Func, Func_der, start_value)
-    x, y = values[0, 0], values[1, 0]
+    x, y = values[0], values[1]
 
     while True:
         # Решаем систему derF * dx = F и обновляем значения x, y
@@ -39,4 +39,4 @@ def sys_root_search(Func, Func_der, start_value: Matrix) -> Matrix:
             return values_
 
         values = values_
-        x, y = values[0, 0], values[1, 0]  # Достаем значения из матрицы
+        x, y = values[0], values[1]  # Достаем значения из матрицы

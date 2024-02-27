@@ -31,8 +31,8 @@ def QR(A: Matrix, b: Matrix) -> Matrix:
     y = ~Q * b
     x = Matrix.zeros(n, 1)
     for k in reversed(range(n)):
-        x[k, 0] = y[k, 0] / R[k, k]
+        x[k] = y[k] / R[k, k]
         for i in range(k + 1, n):
-            x[k, 0] -= R[k, i] * x[i, 0] / R[k, k]
+            x[k] -= R[k, i] * x[i] / R[k, k]
 
     return x

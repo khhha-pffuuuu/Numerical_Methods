@@ -10,7 +10,7 @@ def Jacobi(A: Matrix, b: Matrix, eps: float) -> tuple:
 
     # Строим матрицу B и вектор c в соответствии с алгоритмом из курса
     for i in range(n):
-        c[i, 0] = b[i, 0] / A[i, i]
+        c[i] = b[i] / A[i, i]
         for j in range(n):
             if i != j:
                 B[i, j] = -A[i, j] / A[i, i]

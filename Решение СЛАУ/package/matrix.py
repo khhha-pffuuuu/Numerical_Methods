@@ -110,8 +110,13 @@ class Matrix(object):
     def __setitem__(self, index, value):
         """Функция задает значение элементу матрицы (A[i,j] = α),
         либо строке(столбцу) (A(i, None) = a, A(None, j) = a"""
+        if isinstance(index, int):
+            if self.__r_count == 1:
+                self.__matrix[0][index] = value
+            elif self.__c_count == 1:
+                self.__matrix[index][0] = value
 
-        if isinstance(index, tuple):
+        elif isinstance(index, tuple):
             row, column = index
 
             if None not in index:
@@ -131,7 +136,13 @@ class Matrix(object):
         вырезать только строку или столбец можно таким образом: A[i: None],
         A[None: j]), либо один элемент (A[i,j]), либо вектор из матрицы
         (A[i, None] или A[None, i])"""
-        if isinstance(index, tuple):
+        if isinstance(index, int):
+            # Если работаем с вектором, то обращаться к внутренним элементам можно одним индексом
+            if self.__r_count == 1:
+                return self.__matrix[0][index]
+            elif self.__c_count == 1:
+                return self.__matrix[index][0]
+        elif isinstance(index, tuple):
             row, column = index
 
             if None not in index:

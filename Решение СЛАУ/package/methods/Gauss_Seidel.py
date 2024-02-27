@@ -14,7 +14,7 @@ def Gauss_Seidel(A: Matrix, b: Matrix, eps: float) -> tuple:
     B = E.copy
     c = Matrix.zeros(n, 1)
     for i in range(n):
-        c[i, 0] = b[i, 0] / A[i, i]
+        c[i] = b[i] / A[i, i]
         for j in range(n):
             B[i, j] = -A[i, j] / A[i, i] if i != j else 0
 
@@ -32,10 +32,10 @@ def Gauss_Seidel(A: Matrix, b: Matrix, eps: float) -> tuple:
             row_sum = 0
             for j in range(n):
                 if i != j:
-                    row_sum += B[i, j] * x_[j, 0]
+                    row_sum += B[i, j] * x_[j]
                 else:
-                    row_sum += c[i, 0]
-            x_[i, 0] = row_sum
+                    row_sum += c[i]
+            x_[i] = row_sum
 
         # Проверяем, меньше ли норма B единицы, если да, то используем апостериорную оценку, иначе смотрим неявку
         if B_norm < 1 and B_norm / (1 - B_norm) * (x_ - x).norm('inf') < eps:
