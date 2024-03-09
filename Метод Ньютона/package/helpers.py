@@ -1,4 +1,4 @@
-from .matrix import Matrix
+from Интерполяция.package.matrix import Matrix
 
 
 # Комментарии к методу можно почитать в папке 'Решение СЛАУ'

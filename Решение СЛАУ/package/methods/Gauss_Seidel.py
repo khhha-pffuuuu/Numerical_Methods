@@ -1,4 +1,5 @@
 from ..matrix import Matrix
+from ..helpers import is_dd
 
 
 def Gauss_Seidel(A: Matrix, b: Matrix, eps: float) -> tuple:
@@ -7,7 +8,7 @@ def Gauss_Seidel(A: Matrix, b: Matrix, eps: float) -> tuple:
     E = Matrix.E(n)
 
     # Проверяем два достаточных условия сходимости
-    if not A.is_dd:
+    if not is_dd(A):
         T = ~A
         A, b = T * A, T * b
 

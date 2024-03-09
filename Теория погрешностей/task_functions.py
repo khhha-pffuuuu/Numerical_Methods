@@ -1,4 +1,4 @@
-import math
+from math import pi
 
 
 def fact(n: int) -> int:
@@ -12,7 +12,7 @@ def fact(n: int) -> int:
 
 def sqrt(x: float) -> float:
     """Поиск значения корня при помощи формулы Герона"""
-    eps = 6.4 * 10**-7
+    eps = 6.4 * 10**-7  # Высчитанная точность функции
     res = x / 2
 
     while True:
@@ -24,7 +24,7 @@ def sqrt(x: float) -> float:
 
 def cos(x: float) -> float:
     """Разложение в ряд Тейлора функции cos"""
-    eps = 1.1 * 10**-6
+    eps = 1.1 * 10**-6  # Высчитанная точность функции
     res = 0
     n = 0
 
@@ -38,7 +38,7 @@ def cos(x: float) -> float:
 
 def arctan(x: float) -> float:
     """Разложение в ряд Тейлора функции sin"""
-    eps = 3.5 * 10 ** -7
+    eps = 3.5 * 10 ** -7  # Высчитанная точность функции
     n = 0
 
     if abs(x) < 1:
@@ -50,7 +50,7 @@ def arctan(x: float) -> float:
             res = res_
             n += 1
     else:
-        res = math.pi / 2 * x / abs(x)
+        res = pi / 2 * x / abs(x)
         while True:
             res_ = res - (-1) ** n * x ** -(2 * n + 1) / (2 * n + 1)
             if abs(res_ - res) < eps:

@@ -4,6 +4,8 @@ from package.matrix import Matrix
 
 
 def main():
+    print('∘ТЕМА: Решение систем линейных алгебраических уравнений\n')
+
     # Тесты от нулевого до четвертого
     for i in range(5):
         print(f'ТЕСТ {i}')
@@ -32,7 +34,7 @@ def main():
                   f'Погрешность решения: {inc_FPIM}\n'
                   f'Количество итераций: {iter_count}\n')
 
-        if A.is_dd:  # Только для матриц с диагональным преобладанием
+        if hp.is_dd(A):  # Только для матриц с диагональным преобладанием
             print(f'Метод Якоби:')
             for degree in range(2, 5):  # Несколько тестов с разными точностями
                 x_Jacobi, iter_count = mtd.Jacobi(A, b, 10 ** -degree)
@@ -79,7 +81,7 @@ def main():
                       f'Погрешность решения: {inc_FPIM}\n'
                       f'Количество итераций: {iter_count}\n')
 
-            if A.is_dd:
+            if hp.is_dd(A):
                 print(f'Метод Якоби:')
                 for degree in range(2, 5):  # Несколько тестов с разными точностями
                     x_Jacobi, iter_count = mtd.Jacobi(A, b, 10 ** -degree)

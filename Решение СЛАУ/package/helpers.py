@@ -1,4 +1,3 @@
-from numpy import array
 from scipy.linalg import solve
 
 
@@ -29,7 +28,7 @@ def file_adapting(file):
 
 def exact_solution(m_A, m_b):
     """Функция, стилизующая вывод матрицы из numpy"""
-    x = solve(array(m_A), array(m_b))
+    x = solve(m_A, m_b)
     matrix = []
 
     for i in range(len(x)):
@@ -58,3 +57,17 @@ def fifth_task_helper(n, eps):
         m_A.append(row)
 
     return m_A, m_b
+
+
+def is_dd(A) -> bool:
+    """Проверка матрицы на диагональное преобладание (только для квадратных матрицы)"""
+    n = A.dim[0]
+    for i in range(n):
+        row_sum = 0
+        for j in range(n):
+            row_sum = row_sum + abs(A[i, j]) if i != j else row_sum
+
+        if abs(A[i, i]) <= row_sum:
+            return False
+
+    return True

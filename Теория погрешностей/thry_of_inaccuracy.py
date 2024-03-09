@@ -1,23 +1,28 @@
-import math
+import task_functions as tf
 
-import task_functions as func
+from math import sqrt, atan, cos
+from prettytable import PrettyTable
 
 
 def main():
+    print('∘ТЕМА: Теория Погрешностей\n')
+    table = PrettyTable()
+    table.field_names = [
+        'Значение аргумента x', 'Погрешность квадратного корня', 'Погрешность арктангенса',
+        'Погрешность косинуса', 'Погрешность функции z'
+    ]
+
     x = 0.01
+    while x <= 0.06:  # Смотрим погрешности в промежутке [0.01, 0.06] с шагом 0.005
+        x = round(x, 3)  # Отбрасываем случайно появившуюся дробную часть
+        z = sqrt(2 * x + 0.4) * atan(cos(3 * x + 1))
+        z_ = tf.sqrt(2 * x + 0.4) * tf.arctan(tf.cos(3 * x + 1))
 
-    while x <= 0.06:
-        x = round(x * 1000) / 1000
-        z = func.sqrt(2 * x + 0.4) * func.arctan(func.cos(3 * x + 1))
-        z_ = math.sqrt(2 * x + 0.4) * math.atan(math.cos(3 * x + 1))
-
-        print(f'x = {x}:\n'
-              f'sqrt: |{func.sqrt(x)} - {math.sqrt(x)}| = {abs(func.sqrt(x) - math.sqrt(x))}\n'
-              f'arctg: |{func.arctan(x)} - {math.atan(x)}| = {abs(func.arctan(x) - math.atan(x))}\n'
-              f'cos: |{func.cos(x)} - {math.cos(x)}| = {abs(func.cos(x) - math.cos(x))}\n'
-              f'z: |{z} - {z_}| = {abs(z - z_)}', end="\n\n")
+        table.add_row([x, abs(tf.sqrt(x) - sqrt(x)), abs(tf.arctan(x) - atan(x)), abs(tf.cos(x) - cos(x)), abs(z_ - z)])
 
         x += 0.005
+
+    print(table)
 
 
 if __name__ == '__main__':

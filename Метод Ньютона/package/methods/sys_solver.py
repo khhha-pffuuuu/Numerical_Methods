@@ -1,13 +1,13 @@
-from ..matrix import Matrix
+from Интерполяция.package.matrix import Matrix
 from ..helpers import LUP
 
 
-def approach(Func, Func_der, start_value: Matrix) -> Matrix:
+def approach(Func, Func_der) -> Matrix:
     """Функция приближенного поиска решения системы с помощью метода Ньютона"""
     n = 10  # Ранг дробления Ф(x,y,l)
 
     # Начальные значения x, y
-    values = start_value
+    values = Matrix.zeros(2, 1)
     x, y = values[0], values[1]
 
     i = 0
@@ -22,12 +22,12 @@ def approach(Func, Func_der, start_value: Matrix) -> Matrix:
     return values
 
 
-def sys_root_search(Func, Func_der, start_value: Matrix) -> Matrix:
+def sys_root_search(Func, Func_der) -> Matrix:
     """Непосредственно сам метод Ньютона(классический) для систем уравнений"""
     eps = 10 ** -4  # Заданная погрешность
 
     # Высчитываем первое приближение к корню
-    values = approach(Func, Func_der, start_value)
+    values = approach(Func, Func_der)
     x, y = values[0], values[1]
 
     while True:

@@ -69,48 +69,11 @@ class Matrix(object):
 
         return False
 
-    @property
-    def is_pd(self):
-        """Проверка матрицы на положительную определенность критерием Сильвестра"""
-        for i in range(self.__r_count):
-            minor = self.copy
-            for _ in range(i + 1, self.__c_count):
-                m = minor.dim[0] - 1
-                minor = minor[m: m]
-            elem = minor.det // abs(minor.det) if minor.det != 0 else 0
-
-            if elem <= 0:
-                return False
-
-        return True
-
-    @property
-    def is_sym(self):
-        """Проверка матрицы на симметричность"""
-        for i in range(self.__r_count):
-            for j in range(i + 1, self.__c_count):
-                if self.__matrix[i][j] != self.__matrix[j][i]:
-                    return False
-
-        return True
-
-    @property
-    def is_dd(self):
-        """Проверка матрицы на диагональное преобладание (только для квадратных матрицы)"""
-        for i in range(self.__r_count):
-            row_sum = 0
-            for j in range(self.__c_count):
-                row_sum = row_sum + abs(self.__matrix[i][j]) if i != j else row_sum
-
-            if abs(self.__matrix[i][i]) <= row_sum:
-                return False
-
-        return True
-
     def __setitem__(self, index, value):
         """Функция задает значение элементу матрицы (A[i,j] = α),
         либо строке(столбцу) (A(i, None) = a, A(None, j) = a"""
         if isinstance(index, int):
+            # Если работаем с вектором, то обращаться к внутренним элементам можно одним индексом
             if self.__r_count == 1:
                 self.__matrix[0][index] = value
             elif self.__c_count == 1:
@@ -122,16 +85,18 @@ class Matrix(object):
             if None not in index:
                 self.__matrix[row][column] = value
 
-            elif column is None:
+            val_list = [value for _ in range(max(self.dim))] if isinstance(value, int) else value
+
+            if column is None:
                 for i in range(self.__c_count):
-                    self.__matrix[row][i] = value.__matrix[0][i]
+                    self.__matrix[row][i] = val_list[i]
 
             elif row is None:
                 for i in range(self.__r_count):
-                    self.__matrix[i][column] = value.__matrix[i][0]
+                    self.__matrix[i][column] = val_list[i]
 
     def __getitem__(self, index):
-        """Функция возвращает либо обрезанную матрицу (A[i:j], например,
+        """Функция возвращает либо обрезанную матрицу (A[i: j], например,
         дана матрица A = [[1, 0], [0, 1]], тогда A[1: 1] = [[1]], к тому же,
         вырезать только строку или столбец можно таким образом: A[i: None],
         A[None: j]), либо один элемент (A[i,j]), либо вектор из матрицы
@@ -142,6 +107,7 @@ class Matrix(object):
                 return self.__matrix[0][index]
             elif self.__c_count == 1:
                 return self.__matrix[index][0]
+
         elif isinstance(index, tuple):
             row, column = index
 
@@ -209,15 +175,15 @@ class Matrix(object):
 
             return Matrix(matrix)
 
-    def __rmul__(self, number):
+    def __rmul__(self, number: int):
         """Функция позволяет коммутативно умножать матрицу на число"""
         return self * number
 
     def __imul__(self, number):
-        """Перегрузка оператора *= для чисел"""
+        """Перегрузка оператора *="""
         return self * number
 
-    def __truediv__(self, number):
+    def __truediv__(self, number: int):
         """Деление матрицы на число"""
         matrix = []
 
@@ -236,13 +202,10 @@ class Matrix(object):
 
     def __matmul__(self, other):
         """Скалярное произведение (a @ b)"""
-        vec1 = ~self if self.__c_count == 1 else self
-        vec2 = ~other if other.__r_count == 1 else other
-
         in_prod = 0
 
-        for i in range(vec1.__c_count):
-            in_prod += vec1.__matrix[0][i] * vec2.__matrix[i][0]
+        for i in range(max(self.dim)):
+            in_prod += self[i] * other[i]
 
         return in_prod
 
@@ -387,7 +350,7 @@ class Matrix(object):
         return det
 
     def __abs__(self):
-        """Нахождение евклидовой нормы (abs(a))"""
+        """Нахождение евклидовой нормы векторов (abs(a))"""
         return sqrt(self @ self)
 
     def norm(self, norm_type):
@@ -425,6 +388,34 @@ class Matrix(object):
             for j in range(self.__c_count):
                 row.append(self.__matrix[i][j])
             matrix.append(row)
+
+        return Matrix(matrix)
+
+    def concatenate(self, other, axis: int = 1):
+        """Соединение матриц по осям Ox(axis=1) и Oy(axis=0)"""
+        matrix = []
+
+        if axis == 1:
+            rows = self.__r_count
+            matrix = [[] for _ in range(rows)]
+
+            for i in range(rows):
+                for j in range(self.__c_count):
+                    matrix[i].append(self.__matrix[i][j])
+
+                for j in range(other.__c_count):
+                    matrix[i].append(other.__matrix[i][j])
+
+        elif axis == 0:
+            cols = self.__c_count
+            matrix = []
+
+            for i in range(cols):
+                for j in range(self.__r_count):
+                    matrix.append([self.__matrix[j][i]])
+
+                for j in range(other.__r_count):
+                    matrix.append([other.__matrix[j][i]])
 
         return Matrix(matrix)
 
