@@ -8,7 +8,7 @@ from prettytable import PrettyTable
 def main():
     print('∘ЗАДАНИЕ 1: Интерполяционные полиномы Лагранжа и Ньютона\n\n')
     a, b = -10, 10    # Концы промежутка, на котором будем рассматривать функцию
-    nums = [2, 10, 20]
+    nums = [4, 9, 19]
 
     plt.figure(figsize=(12, 6))
     for i in range(len(nums)):
@@ -17,14 +17,14 @@ def main():
 
         # Равномерное приращение
         args = hp.uniform_points(a, b, n)
-        vals = [hp.func(x) for x in args]
+        vals = hp.func(args)
 
         L = mtd.LIP(args, vals)  # Полином Лагранжа при равномерном разбиении
         N = mtd.NIP(args, vals)  # Интерполяционный полином Ньютона при равномерном разбиении
 
         # "Оптимальное" приращение
         args_opt = hp.optimal_points(a, b, n)
-        vals_opt = [hp.func(x) for x in args_opt]
+        vals_opt = hp.func(args_opt)
 
         L_opt = mtd.LIP(args_opt, vals_opt)  # Полином Лагранжа при оптимальном разбиении
         N_opt = mtd.NIP(args_opt, vals_opt)  # Интерполяционный полином Ньютона при оптимальном разбиении
@@ -49,13 +49,13 @@ def main():
 
         print(table, end='\n\n')
 
-#########################################################
-# Строим графики функций интерполяционных полиномов #####
-#########################################################
+    #########################################################
+    # Строим графики функций интерполяционных полиномов #####
+    #########################################################
 
         k = 200  # Разбиение функции на m точек
         points = hp.uniform_points(b, a, k)  # Будем строить график по 200-м точкам
-        func_vals = [hp.func(x) for x in points]  # Значения действительной функции в точках points
+        func_vals = hp.func(points)  # Значения действительной функции в точках points
         L_vals, L_opt_vals = L(points), L_opt(points)  # Значения ИП Лагранжа в точках points
         N_vals, N_opt_vals = N(points), N_opt(points)  # Значения ИП Ньютона в точках points
 
@@ -90,7 +90,7 @@ def main():
 
         # Равномерное приращение
         args = hp.uniform_points(a, b, n)
-        vals = [hp.func(x) for x in args]
+        vals = hp.func(args)
 
         lin = mtd.LSF(args, vals)  # Линейный сплайн при равномерном разбиении
         quad = mtd.QSF(args, vals, 6.5)  # Квадратичный сплайн при равномерном разбиении
@@ -98,7 +98,7 @@ def main():
 
         # "Оптимальное" приращение
         args_opt = hp.optimal_points(a, b, n)
-        vals_opt = [hp.func(x) for x in args_opt]
+        vals_opt = hp.func(args_opt)
 
         lin_opt = mtd.LSF(args_opt, vals_opt)  # Линейный сплайн при "оптимальном" разбиении
         quad_opt = mtd.QSF(args_opt, vals_opt, 7.5)  # Квадратичный сплайн при "оптимальном" разбиении
@@ -119,11 +119,9 @@ def main():
             cube_devs = hp.deviations(hp.func, cube, a, b, m)
 
             # Отклонения сплайнов при оптимальном разбиении
-            l_edge, r_edge = args_opt[-1], args_opt[0]  # Задаем границы, внутри которых будем считать погрешности.
-            # Делаем это потому, что функции с оптимальным разбиением определены на меньшем множестве, чем [a, b]
-            lin_opt_devs = hp.deviations(hp.func, lin_opt, l_edge, r_edge, m)
-            quad_opt_devs = hp.deviations(hp.func, quad_opt, l_edge, r_edge, m)
-            cube_opt_devs = hp.deviations(hp.func, cube_opt, l_edge, r_edge, m)
+            lin_opt_devs = hp.deviations(hp.func, lin_opt, a, b, m)
+            quad_opt_devs = hp.deviations(hp.func, quad_opt, a, b, m)
+            cube_opt_devs = hp.deviations(hp.func, cube_opt, a, b, m)
 
             table.add_row([m, max(lin_devs), max(lin_opt_devs),
                            max(quad_devs), max(quad_opt_devs),
@@ -131,9 +129,9 @@ def main():
 
         print(table, end='\n\n')
 
-#########################################################
-# Строим графики распределения абсолютной погрешности ###
-#########################################################
+    #########################################################
+    # Строим графики распределения абсолютной погрешности ###
+    #########################################################
 
     plt.figure(figsize=(12, 6))
     for i in range(len(nums)):
@@ -143,18 +141,22 @@ def main():
         # Графики построим так: каждому x сопоставляем абсолютное отклонение высчитанной функции от действительной
 
         args = hp.uniform_points(a, b, n)
-        vals = [hp.func(x) for x in args]
+        vals = hp.func(args)
         N, cube = mtd.NIP(args, vals), mtd.CSF(args, vals)
 
         args_opt = hp.optimal_points(a, b, n)
-        vals_opt = [hp.func(x) for x in args_opt]
+        vals_opt = hp.func(args_opt)
         N_opt, cube_opt = mtd.NIP(args_opt, vals_opt), mtd.CSF(args_opt, vals_opt)
 
-        k = 200  # Разбиение функции на k точек
+        k = 200  # Разбиение функции на k + 1 точек
 
-        points = hp.uniform_points(b, a, k)
+        points = hp.uniform_points(a, b, k)
         # Списки отклонений соответственно ИП Ньютона и кубического сплайна при равномерном распределении
-        N_devs, cube_devs = hp.deviations(hp.func, N, a, b, k), hp.deviations(hp.func, cube, a, b, k)
+        N_devs = hp.deviations(hp.func, N, a, b, k)
+        cube_devs = hp.deviations(hp.func, cube, a, b, k)
+        # Списки отклонений соответственно ИП Ньютона и кубического сплайна при оптимальном распределении
+        N_opt_devs = hp.deviations(hp.func, N_opt, a, b, k)
+        cube_opt_devs = hp.deviations(hp.func, cube_opt, a, b, k)
 
         plt.subplot(321 + i * 2)
         plt.grid(True)
@@ -162,18 +164,12 @@ def main():
         plt.plot(points, cube_devs, label='Отклонение $S_{3,2}$')
         plt.legend()
 
-        l_edge, r_edge = args_opt[-1], args_opt[0]  # Аналогично со случаем выше, задаем новые границы
-        points_opt = hp.uniform_points(r_edge, l_edge, k)
-        # Списки отклонений соответственно ИП Ньютона и кубического сплайна при "оптимальном" распределении
-        N_opt_devs = hp.deviations(hp.func, N_opt, l_edge, r_edge, k)
-        cube_opt_devs = hp.deviations(hp.func, cube_opt, l_edge, r_edge, k)
-
         plt.subplot(322 + i * 2)
         plt.grid(True)
-        plt.plot(points_opt, N_opt_devs)
-        plt.plot(points_opt, cube_opt_devs)
+        plt.plot(points, N_opt_devs)
+        plt.plot(points, cube_opt_devs)
         max_dev = max(max(N_opt_devs), max(cube_opt_devs))  # Верхняя граница 'оптимальных' функций
-        plt.text((l_edge - r_edge) / 20, 0.8 * max_dev, f'Узлов: {n + 1}',
+        plt.text((a - b) / 20, 0.8 * max_dev, f'Узлов: {n + 1}',
                  bbox={'facecolor': 'white', 'alpha': 0.5, 'pad': 8})
 
     plt.suptitle('Графики для второго задания', fontsize=16, fontweight='bold')
