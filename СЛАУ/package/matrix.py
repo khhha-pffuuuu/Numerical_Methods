@@ -1,4 +1,4 @@
-from math import sqrt
+from .helpers import sqrt
 
 
 class Matrix(object):
@@ -32,6 +32,7 @@ class Matrix(object):
             str_row = []
             for elem in row:
                 format_elem = f"{elem:.{self.discard_index}f}" \
+                    if elem > 0 else f"{elem:.{self.discard_index - 1}f}" \
                     if f"{elem:.{self.discard_index}f}" != f'-{0:.{self.discard_index}f}' \
                     else f'{0:.{self.discard_index}f}'
 
@@ -443,3 +444,9 @@ class Matrix(object):
             cols = rows
 
         return Matrix([[0 for _ in range(cols)] for _ in range(rows)])
+
+    @staticmethod
+    def diag(elems: list):
+        n = len(elems)
+
+        return Matrix([[0 if i != j else elems[i] for j in range(n)] for i in range(n)])

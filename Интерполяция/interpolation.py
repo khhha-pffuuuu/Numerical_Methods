@@ -1,5 +1,5 @@
 import package.helpers as hp
-import package.adjuster as mtd
+import package.linker as mtd
 
 import matplotlib.pyplot as plt
 from prettytable import PrettyTable

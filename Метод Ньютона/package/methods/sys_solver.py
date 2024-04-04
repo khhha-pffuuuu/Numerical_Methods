@@ -1,5 +1,5 @@
-from Интерполяция.package.matrix import Matrix
-from ..helpers import LUP
+from СЛАУ.package.matrix import Matrix
+from СЛАУ.package.methods.LUP import LUP
 
 
 def approach(Func, Func_der) -> Matrix:

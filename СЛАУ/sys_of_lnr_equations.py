@@ -1,4 +1,4 @@
-import package.adjuster as mtd
+import package.linker as mtd
 import package.helpers as hp
 from package.matrix import Matrix
 

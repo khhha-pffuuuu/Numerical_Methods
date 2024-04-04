@@ -1,5 +1,5 @@
-from ..matrix import Matrix
-from ..helpers import LUP
+from СЛАУ.package.matrix import Matrix
+from СЛАУ.package.methods.LUP import LUP
 
 
 def cubic_spline_coeffs(args: list, vals: list, cond: tuple) -> Matrix:

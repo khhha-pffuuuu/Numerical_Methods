@@ -1,6 +1,6 @@
 from math import cos, sin
 
-from Интерполяция.package.matrix import Matrix
+from СЛАУ.package.matrix import Matrix
 
 
 def Function(x, y, l=1.0) -> Matrix:
