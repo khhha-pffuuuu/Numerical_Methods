@@ -1,4 +1,3 @@
-from СЛАУ.package.matrix import Matrix
 from math import acos, cos, pi
 
 
